@@ -2,7 +2,7 @@ import { Component, Inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatDialogModule, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatTableModule } from '@angular/material/table';
-import { Transaction } from '../../models/financial.model';
+import { Transaction } from '../../core/models/financial.model';
 
 @Component({
   selector: 'app-drill-down-modal',
