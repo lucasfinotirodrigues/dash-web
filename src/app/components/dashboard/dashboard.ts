@@ -2,6 +2,8 @@ import { Component, OnInit, signal, effect } from '@angular/core';
 import { CommonModule, registerLocaleData } from '@angular/common';
 import localePt from '@angular/common/locales/pt';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
+import { RouterModule } from '@angular/router';
 import { FinancialService } from '../../core/services/financial.service';
 import { KpiCardV2Component } from '../../shared/components/kpi-card/kpi-card.component';
 import { ApexChartComponent } from '../../shared/components/charts/apex-chart.component';
@@ -16,10 +18,15 @@ registerLocaleData(localePt);
   imports: [
     CommonModule,
     MatDialogModule,
+    MatIconModule,
+    RouterModule,
     KpiCardV2Component,
     ApexChartComponent
   ],
   template: `
+  <div style=" padding: 40px 40px 0 40px;"> 
+    <img routerLink="/" src="./arrow-left.svg" alt="" style="cursor: pointer;">
+  </div>
     <div class="dashboard-wrapper">
       <!-- Loading Overlay -->
       <div class="loading-overlay" *ngIf="fs.loading()">
@@ -29,9 +36,9 @@ registerLocaleData(localePt);
 
       <div class="dashboard-container" *ngIf="fs.dashboardData() as data">
         <header class="dashboard-header animate-fade-in">
-          <div class="header-title">
-            <h1>Dashboard Financeiro</h1>
-            <p class="subtitle">Visão executiva e estratégica de resultados</p>
+            <div class="header-title">
+              <h1>Dashboard Financeiro</h1>
+              <p class="subtitle">Visão executiva e estratégica de resultados</p>
           </div>
           <div class="health-indicator-premium" [ngClass]="data.kpis.healthStatus">
             <span class="pulse-dot"></span>
@@ -89,14 +96,83 @@ registerLocaleData(localePt);
           ></app-apex-chart>
         </div>
 
-        <section class="ranking-section animate-slide-up" style="animation-delay: 0.2s">
+        <!-- NOVOS INDICADORES DE RECEITA E DESPESA -->
+        <div class="indicators-row animate-slide-up" style="animation-delay: 0.2s;margin-top:84px">
+          <!-- SEÇÃO RECEITA -->
+          <div class="indicator-group incomes glass-card">
+            <div class="group-header">
+              <h3>Indicadores de Receita</h3>
+            </div>
+            
+            <div class="indicator-sections">
+              <div class="sub-section">
+                <h4>3 Maiores Clientes</h4>
+                <div class="mini-ranking">
+                  <div class="ranking-item" *ngFor="let client of data.topReceivableEntities.slice(0, 3); let i = index">
+                    <span class="rank-name">{{ client.entity }}</span>
+                    <span class="rank-value">{{ client.total | currency:'BRL' }}</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="sub-section">
+                <h4>Picos de Recebimento</h4>
+                <div class="date-list">
+                  <div class="date-item" *ngFor="let date of data.topReceivableDates">
+                    <span class="date-label">{{ date.date | date:'dd/MM/yyyy' }}</span>
+                    <span class="date-value">{{ date.total | currency:'BRL' }}</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="conclusion-box">
+                <p>{{ data.conclusionIncomes }}</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- SEÇÃO DESPESA -->
+          <div class="indicator-group expenses glass-card">
+            <div class="group-header">
+              <h3>Indicadores de Despesa</h3>
+            </div>
+            
+            <div class="indicator-sections">
+              <div class="sub-section">
+                <h4>3 Maiores Fornecedores</h4>
+                <div class="mini-ranking">
+                  <div class="ranking-item" *ngFor="let supplier of data.topPayableEntities.slice(0, 3); let i = index">
+                    <span class="rank-name">{{ supplier.entity }}</span>
+                    <span class="rank-value">{{ supplier.total | currency:'BRL' }}</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="sub-section">
+                <h4>Picos de Pagamentos</h4>
+                <div class="date-list">
+                  <div class="date-item" *ngFor="let date of data.topPayableDates">
+                    <span class="date-label">{{ date.date | date:'dd/MM/yyyy' }}</span>
+                    <span class="date-value">{{ date.total | currency:'BRL' }}</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="conclusion-box">
+                <p>{{ data.conclusionExpenses }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <section class="ranking-section animate-slide-up" style="animation-delay: 0.3s">
           <div class="glass-card ranking-card">
             <div class="card-header">
-              <h3>Top 5 Centro de Custos</h3>
+              <h3>Distribuição por Centro de Custos</h3>
               <button class="btn-text">Ver todos</button>
             </div>
             <div class="ranking-list">
-              <div class="ranking-item" *ngFor="let cat of data.topPayableCategories.slice(0, 5); let i = index">
+              <div class="ranking-item-full" *ngFor="let cat of data.topPayableCategories.slice(0, 5); let i = index">
                 <span class="rank-num">{{ i + 1 }}</span>
                 <div class="rank-info">
                   <span class="rank-label">{{ cat.category }}</span>
@@ -130,6 +206,31 @@ registerLocaleData(localePt);
       justify-content: space-between;
       align-items: flex-start;
       margin-bottom: 40px;
+    }
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+    .btn-back {
+      width: 48px;
+      height: 48px;
+      border-radius: 14px;
+      border: 1px solid #e2e8f0;
+      background: white;
+      color: #4a5568;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    }
+    .btn-back:hover {
+      background: #f7fafc;
+      color: #3182ce;
+      border-color: #3182ce;
+      transform: translateX(-4px);
     }
     .header-title h1 {
       font-size: 2.2rem;
@@ -216,7 +317,7 @@ registerLocaleData(localePt);
     .btn-text { background: none; border: none; color: var(--accent-color); font-weight: 600; cursor: pointer; }
     
     .ranking-list { display: flex; flex-direction: column; gap: 20px; }
-    .ranking-item { display: flex; align-items: center; gap: 20px; }
+    .ranking-item-full { display: flex; align-items: center; gap: 20px; }
     .rank-num { font-size: 1.2rem; font-weight: 800; color: #cbd5e0; width: 24px; }
     .rank-info { flex: 1; display: flex; flex-direction: column; gap: 8px; }
     .rank-label { font-weight: 600; font-size: 0.95rem; color: #2d3748; }
@@ -225,6 +326,78 @@ registerLocaleData(localePt);
     .rank-stats { display: flex; flex-direction: column; align-items: flex-end; width: 120px; }
     .rank-value { font-weight: 700; color: #2d3748; }
     .rank-perc { font-size: 0.8rem; color: #a0aec0; }
+
+    /* New Indicator Styles */
+    .indicators-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 30px;
+      margin-top: 30px;
+    }
+    .indicator-group {
+      padding: 30px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+    .group-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border-bottom: 2px solid #f7fafc;
+      padding-bottom: 15px;
+    }
+    .group-header h3 { margin: 0; font-size: 1.3rem; font-weight: 700; }
+    .income-icon { color: #2e7d32; }
+    .expense-icon { color: #c62828; }
+    
+    .indicator-sections {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+    .sub-section h4 {
+      margin: 0 0 12px 0;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      color: #718096;
+      letter-spacing: 0.05em;
+    }
+    .mini-ranking, .date-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .ranking-item, .date-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 15px;
+      background: #f8fafc;
+      border-radius: 12px;
+      font-size: 0.95rem;
+    }
+    .rank-name, .date-label { font-weight: 600; color: #2d3748; }
+    .rank-value, .date-value { font-weight: 700; color: #4a5568; }
+
+    .conclusion-box {
+      margin-top: 10px;
+      padding: 20px;
+      background: #ebf8ff;
+      border-left: 4px solid #3182ce;
+      border-radius: 12px;
+    }
+    .expenses .conclusion-box {
+      background: #fff5f5;
+      border-left-color: #e53e3e;
+    }
+    .conclusion-box p {
+      margin: 0;
+      font-size: 0.95rem;
+      line-height: 1.6;
+      color: #2d3748;
+      font-weight: 500;
+    }
 
     /* Animations */
     .animate-fade-in { animation: fadeIn 0.8s ease-out; }

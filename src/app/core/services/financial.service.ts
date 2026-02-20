@@ -59,8 +59,13 @@ export class FinancialService {
             },
             topPayableCategories: this.getTopCategories(expenses, totalPayable),
             topReceivableEntities: this.getTopEntities(incomes, totalReceivable),
+            topPayableEntities: this.getTopEntities(expenses, totalPayable),
             receivableByCategory: this.getTopCategories(incomes, totalReceivable),
             payableByCategory: this.getTopCategories(expenses, totalPayable),
+            topReceivableDates: this.getTopDates(incomes),
+            topPayableDates: this.getTopDates(expenses),
+            conclusionIncomes: this.generateConclusion(incomes, 'RECEITA'),
+            conclusionExpenses: this.generateConclusion(expenses, 'DESPESA'),
         };
 
         return of(data);
@@ -91,8 +96,34 @@ export class FinancialService {
             .map(([entity, value]) => ({
                 entity,
                 total: value,
-                percentage: (value / total) * 100,
+                percentage: total > 0 ? (value / total) * 100 : 0,
             }))
             .sort((a, b) => b.total - a.total);
+    }
+
+    private getTopDates(transactions: Transaction[]) {
+        const datesMap = new Map<string, number>();
+        transactions.forEach(t => {
+            datesMap.set(t.date, (datesMap.get(t.date) || 0) + t.value);
+        });
+
+        return Array.from(datesMap.entries())
+            .map(([date, total]) => ({ date, total }))
+            .sort((a, b) => b.total - a.total)
+            .slice(0, 3);
+    }
+
+    private generateConclusion(transactions: Transaction[], type: 'RECEITA' | 'DESPESA'): string {
+        if (transactions.length === 0) return `Nenhuma ${type.toLowerCase()} registrada no período.`;
+
+        const total = transactions.reduce((acc, t) => acc + t.value, 0);
+        const topEntity = this.getTopEntities(transactions, total)[0];
+        const topDate = this.getTopDates(transactions)[0];
+
+        if (type === 'RECEITA') {
+            return `A receita total é de ${total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}, com destaque para o cliente ${topEntity.entity} que representa ${topEntity.percentage.toFixed(1)}% do volume total. O pico de recebimento ocorreu em ${new Date(topDate.date).toLocaleDateString('pt-BR')}.`;
+        } else {
+            return `As despesas totalizam ${total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}, sendo que ${topEntity.entity} é o principal fornecedor (${topEntity.percentage.toFixed(1)}%). O maior volume de pagamentos foi concentrado no dia ${new Date(topDate.date).toLocaleDateString('pt-BR')}.`;
+        }
     }
 }

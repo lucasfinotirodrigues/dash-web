@@ -1,0 +1,148 @@
+.home-wrapper {
+  height: 83vh;
+  padding: 80px 40px;
+  background:
+    linear-gradient(rgba(245, 247, 250, 0.8), rgba(195, 207, 226, 0.8)),
+    url('/logo.png') no-repeat center center fixed;
+  background-size: 800px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.home-container {
+  max-width: 1000px;
+  width: 100%;
+}
+
+.home-header {
+  text-align: center;
+  margin-bottom: 60px;
+}
+
+.home-header h1 {
+  font-size: 3rem;
+  font-weight: 800;
+  color: #1a202c;
+  margin: 0;
+  letter-spacing: -0.03em;
+}
+
+.home-header .subtitle {
+  font-size: 1.2rem;
+  color: #4a5568;
+  margin-top: 12px;
+}
+
+.client-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 30px;
+}
+
+.client-card {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(10px);
+  border-radius: 24px;
+  padding: 30px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+}
+
+.premium-card:hover {
+  transform: translateY(-10px) scale(1.02);
+  background: white;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  border-color: #3182ce;
+}
+
+.client-icon {
+  width: 64px;
+  height: 64px;
+  background: #ebf8ff;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #3182ce;
+}
+
+.client-icon mat-icon {
+  font-size: 32px;
+  width: 32px;
+  height: 32px;
+}
+
+.client-info {
+  flex: 1;
+}
+
+.client-info h3 {
+  margin: 0;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #2d3748;
+}
+
+.client-info p {
+  margin: 4px 0 0 0;
+  color: #718096;
+  font-size: 0.9rem;
+}
+
+.client-action {
+  color: #cbd5e0;
+  transition: color 0.3s;
+}
+
+.premium-card:hover .client-action {
+  color: #3182ce;
+}
+
+.placeholder-card {
+  opacity: 0.6;
+  border: 2px dashed #cbd5e0;
+  background: transparent;
+  cursor: default;
+}
+
+.placeholder-card .client-icon {
+  background: #f7fafc;
+  color: #a0aec0;
+}
+
+/* Animations */
+.animate-fade-in {
+  animation: fadeIn 1s ease-out;
+}
+
+.animate-slide-up {
+  animation: slideUp 1s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

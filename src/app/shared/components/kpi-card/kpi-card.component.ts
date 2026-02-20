@@ -11,10 +11,7 @@ import { MatIconModule } from '@angular/material/icon';
       <div class="kpi-gradient"></div>
       <div class="kpi-content">
         <div class="kpi-header">
-          <span class="kpi-label">{{ title }}</span>
-          <div class="kpi-icon-wrapper">
-            <mat-icon>{{ icon }}</mat-icon>
-          </div>
+          <span class="kpi-label">{{ title }}</span>       
         </div>
         <div class="kpi-body">
           <h2 class="kpi-value">

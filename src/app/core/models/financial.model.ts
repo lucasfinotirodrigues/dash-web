@@ -25,6 +25,11 @@ export interface EntitySummary {
     percentage: number;
 }
 
+export interface DateSummary {
+    date: string;
+    total: number;
+}
+
 export interface DashboardKPIs {
     totalReceivable: number;
     totalPayable: number;
@@ -37,6 +42,11 @@ export interface DashboardData {
     kpis: DashboardKPIs;
     topPayableCategories: CategorySummary[];
     topReceivableEntities: EntitySummary[];
+    topPayableEntities: EntitySummary[];
     receivableByCategory: CategorySummary[];
     payableByCategory: CategorySummary[];
+    topReceivableDates: DateSummary[];
+    topPayableDates: DateSummary[];
+    conclusionIncomes: string;
+    conclusionExpenses: string;
 }
